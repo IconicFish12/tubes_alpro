@@ -59,14 +59,36 @@ func printData(A tabTempat, n int) {
 	fmt.Println("=================================")
 }
 
-func findData(A tabTempat, n int, tId int) {
+// Pencarian data menggunakan Binary Search
+func findData(A tabTempat, n int, input string) int {
+	return -1
+}
+
+
+// Proses Pengubahan data tempat penyewaan acara
+func editData(A tabTempat, n int, idData int, input string) {
+
+	// kondisi := findData(A, n, input)
+
+}
+
+
+// Proses penghapusan data tempat penyewaan acara
+func hapusData(A tabTempat, n int, idData int, input string) {
+
+}
+
+
+// Proses Penyewaan temppat penyewaan acara
+func sewaTempat() {
 
 }
 
 func main() {
 	var data_tempat tabTempat
-	var nData int
-	var status string
+	// var pemesanan tabPesanan
+	var nData, id_data, query_2 int
+	var status, query string
 
 	fmt.Print("Masukan jumlah data yang akan dimasukkan: ")
 	fmt.Scan(&nData)
@@ -81,12 +103,17 @@ func main() {
 	fmt.Println("Apakah ingin merubah data ?")
 	fmt.Print("Masukan (edit) jika ingin mengubah, Masukan (hapus) jika ingin menghapus : ")
 	fmt.Scan(&status)
+	fmt.Print("Masukan id, query 1 berupa string(nama dan lokasi), query 2 berupa integer(kapasitas) : ")
+	fmt.Scan(&id_data, &query, &query_2)
 
-	if status == "edit"{
+
+
+	if status == "edit" {
+
 
 	} else if status == "hapus" {
 
-	} else {
-		
+	} else if status == "sewa"  {
+
 	}
 }
