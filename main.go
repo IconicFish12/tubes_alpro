@@ -155,7 +155,23 @@ func hapusData(A tabTempat, n int, input string) {
 
 // Proses Penyewaan temppat penyewaan acara
 func sewaTempat(B *tabPesanan) {
+	var sewa, ya, tidak string
+	var durasi_sewa, total_harga, n int
+	
 
+	fmt.Print("apakah anda ingin sewa tempat? (ya/tidak)")
+	fmt.Scan(&sewa)
+
+	if sewa == ya {
+		fmt.Scan(&durasi_sewa)
+		total_harga = A[i].harga_sewa_perjam * durasi_sewa
+		for i := 0; i < n; i++ {
+			fmt.Printf("Nama Tempat: %s, Lokasi Tempat: %s, Kapasitas Tersedia: %d, Total Harga: %d\n",
+				B[i].nama_tempat, B[i].lokasi_tempat, B[i].kapasitas, total_harga)
+		}
+	}else if sewa == tidak {
+		//___
+	}
 }
 
 func main() {
