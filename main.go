@@ -11,17 +11,11 @@ type tempat struct {
 	harga_sewa_perjam  int
 }
 
-type pesanan struct {
-	nama_user     string
-	nama_tempat   string
-	lokasi_tempat string
-	kapasitas     int
-	durasi_sewa   int
-	total_harga   float64
-}
-
 type tabTempat [NMAX]tempat
-type tabPesanan [NMAX]pesanan
+
+func (t tempat) LessThan(other tempat) bool {
+	return t.nama_tempat < other.nama_tempat
+}
 
 // Penambahan Data
 func tambahData(A *tabTempat, n *int) {
@@ -66,77 +60,56 @@ func findData(A tabTempat, n int, input *string) int {
 }
 
 // Proses Pengubahan data tempat penyewaan acara
-func editData(A tabTempat, n int, input *string, input_2 *int) {
+func editData(A *tabTempat, n int, input *string, input_2 *int) {
 
-	// variable data_ubah adalah variable yang merepresentasikan data mana yang kan diubah
 	var data_ubah string
 
 	fmt.Print("Masukan Data yang akan diubah (nama, lokasi, kapasitas, harga) / masukan tidak jika \n tidak ingin mengubah data: ")
 	fmt.Scan(&data_ubah)
 
 	if data_ubah == "nama" {
-		// variable x adalah data untuk mengubah nama dan lokasi
 		var x string
-
 		fmt.Print("Masukan nama yang akan diubah: ")
 		fmt.Scan(&x)
-
-		result := findData(A, n, input)
-
+		result := findData(*A, n, input)
 		if result != -1 {
-			A[result].nama_tempat = x
+			(*A)[result].nama_tempat = x
 			fmt.Println("Data Nama Tempat berhasil diubah")
 		} else {
 			fmt.Print("Data nama tempat tidak ditemukan!")
 		}
-
 	} else if data_ubah == "lokasi" {
-		// variable x adalah data untuk mengubah nama dan lokasi
 		var y string
-
 		fmt.Print("Masukan lokasi yang akan diubah: ")
 		fmt.Scan(&y)
-
-		result := findData(A, n, input)
-
+		result := findData(*A, n, input)
 		if result != -1 {
-			A[result].lokasi_tempat = y
+			(*A)[result].lokasi_tempat = y
 			fmt.Println("Data lokasi Tempat berhasil diubah")
-			
 		} else {
 			fmt.Print("Data lokasi tempat tidak ditemukan!")
 		}
-
-	} else if data_ubah == "kapasistas" {
-
+	} else if data_ubah == "kapasitas" {
 		fmt.Print("Masukan kapasitas yang akan diubah: ")
-		fmt.Scan(&*input_2)
-
-		result := findData(A, n, input)
-
+		fmt.Scan(input_2)
+		result := findData(*A, n, input)
 		if result != -1 {
-			A[result].kapasitas_tersedia = *input_2
+			(*A)[result].kapasitas_tersedia = *input_2
 			fmt.Println("Data Kapasitas Tempat berhasil diubah")
 		} else {
 			fmt.Print("Data Kapasitas tempat tidak ditemukan!")
 		}
-
 	} else if data_ubah == "harga" {
-
 		fmt.Print("Masukan harga yang akan diubah: ")
-		fmt.Scan(&*input_2)
-
-		result := findData(A, n, input)
-
+		fmt.Scan(input_2)
+		result := findData(*A, n, input)
 		if result != -1 {
-			A[result].harga_sewa_perjam = *input_2
+			(*A)[result].harga_sewa_perjam = *input_2
 			fmt.Println("Data Harga Sewa Tempat berhasil diubah")
 		} else {
 			fmt.Print("Data Harga Sewa tempat tidak ditemukan!")
 		}
-
 	}
-
 }
 
 // Proses penghapusan data tempat penyewaan acara
@@ -154,29 +127,45 @@ func hapusData(A tabTempat, n int, input string) {
 }
 
 // Proses Penyewaan temppat penyewaan acara
-func sewaTempat(B *tabPesanan) {
-	var sewa, ya, tidak string
-	var durasi_sewa, total_harga, n int
-	
+func sewaTempat(A tabTempat, n int) {
 
-	fmt.Print("apakah anda ingin sewa tempat? (ya/tidak)")
-	fmt.Scan(&sewa)
+	var durasi, hasil int
+	var input string
 
-	if sewa == ya {
-		fmt.Scan(&durasi_sewa)
-		total_harga = A[i].harga_sewa_perjam * durasi_sewa
-		for i := 0; i < n; i++ {
-			fmt.Printf("Nama Tempat: %s, Lokasi Tempat: %s, Kapasitas Tersedia: %d, Total Harga: %d\n",
-				B[i].nama_tempat, B[i].lokasi_tempat, B[i].kapasitas, total_harga)
+	fmt.Println("=================================")
+	fmt.Print("Masukan durasi penyewaan tempat acara / jam : ")
+	fmt.Scan(&durasi)
+	fmt.Print("Masukan Nama Tempat yang ingin disewa : ")
+	fmt.Scan(&input)
+
+	result := findData(A, n, &input)
+
+	if result != -1 {
+		hasil = A[result].harga_sewa_perjam * durasi
+		fmt.Printf("Tempat %s sudah disewa selama %d jam, total harga menjadi %d", A[result].nama_tempat, durasi, hasil)
+		fmt.Println("=================================")
+
+	} else {
+		fmt.Print("Data Nama Tempat tempat tidak ditemukan!")
+	}
+
+}
+
+func ascSort(A *tabTempat, n int) {
+	for i := 1; i < n; i++ {
+		key := (*A)[i]
+		j := i - 1
+		for j >= 0 && (*A)[j].LessThan(key) {
+			(*A)[j+1] = (*A)[j]
+			j--
 		}
-	}else if sewa == tidak {
-		//___
+		(*A)[j+1] = key
 	}
 }
 
+
 func main() {
 	var data_tempat tabTempat
-	var data_pesan tabPesanan
 	var nData, query_2 int
 	var status, query string
 
@@ -187,31 +176,37 @@ func main() {
 	tambahData(&data_tempat, &nData)
 
 	// Tampilkan Semua Data
+	fmt.Println("Data Awal Sebelum ada perubahan")
 	printDataTempat(data_tempat, nData)
 
 	// Memasukan status Pengubahan, penghapusan, dan penyewaan
 	fmt.Println("Apakah ingin merubah data ?")
 	fmt.Print("Masukan (edit) jika ingin mengubah, Masukan (hapus) jika ingin menghapus : ")
 	fmt.Scan(&status)
-	fmt.Print("Masukan id untuk keperluan pengubahan dan penghapusan data : ")
+	fmt.Print("Masukan nama tempat untuk keperluan pengubahan data atau penghapusan data, penyewaan : ")
 	fmt.Scan(&query)
 
 	if status == "edit" {
 
-		editData(data_tempat, nData, &query, &query_2)
+		editData(&data_tempat, nData, &query, &query_2)
 
 	} else if status == "hapus" {
 
 		hapusData(data_tempat, nData, query)
 
-
 	} else if status == "sewa" {
 
-		sewaTempat(&data_pesan)
+		sewaTempat(data_tempat, nData)
 
+		return
 	}
 
+	//Pengurutan data
+	ascSort(&data_tempat, nData)
+
+	printDataTempat(data_tempat, nData)
+
 	//urutkan data secara ASC menggunakan insertion
-	fmt.Print("Apakah data mau diurutkan ? (ya/tidak): ")
-	
+	// fmt.Print("Apakah data mau diurutkan ? (ya/tidak): ")
+
 }
